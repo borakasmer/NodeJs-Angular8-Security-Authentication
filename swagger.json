@@ -1,0 +1,395 @@
+{
+  "swagger": "2.0",
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\""
+    }
+  },
+  "info": {
+    "version": "1.0.0",
+    "title": "coderBora-NodeJS-CRUD-MongoDB",
+    "description": "A minimal and easy to follow example of what you need to create a CRUD style API in NodeJs",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "tags": [
+    {
+      "name": "People",
+      "description": "API for users in the Hueman Resource"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Log in system",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "credential",
+            "in": "body",
+            "required": true,
+            "description": "Login user",
+            "schema": {
+              "type": "object",              
+              "properties": {
+                "username": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "401": {
+            "description": "Failed. Not authorized user."
+          }
+        }
+      }
+    },
+    "/people": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "summary": "Get all users in system",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      }
+    },
+    "/peopleDesc": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get all users descending in system",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      }
+    },
+    "/insertPeople": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create a new user in system",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "description": "person detail",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "Failed. Bad post data."
+          }
+        }
+      }
+    },
+    "/getpeoplebyPaging/{page}/{count}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user list by paging",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "description": "Page number of person list",
+            "type": "string"
+          },
+          {
+            "name": "count",
+            "in": "path",
+            "required": true,
+            "description": "Get total User count per page",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "404": {
+            "description": "Failed. Cat not found."
+          }
+        }
+      }
+    },
+    "/getpeopleByUsername/{name}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user list by userName",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "description": "Get UserName for filter",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "404": {
+            "description": "Failed. Cat not found."
+          }
+        }
+      }
+    },
+    "/getpeopleByLastname": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user list by lastName",
+        "parameters": [
+          {
+            "name": "lastname",
+            "in": "query",
+            "required": true,
+            "description": "Get Lastname for filter",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "404": {
+            "description": "Failed. Cat not found."
+          }
+        }
+      }
+    },
+    "/getpeopleContainsOrderTopWith/{name}/{top}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user list contains name descending order. Take Top count item",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "description": "Contains name in the UserList",
+            "type": "string"
+          },
+          {
+            "name": "top",
+            "in": "path",
+            "required": true,
+            "description": "Get taken total User count",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "404": {
+            "description": "Failed. Cat not found."
+          }
+        }
+      }
+    },
+    "/getpeopleStartsWith/{name}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user list starts with name.",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "description": "Contains name in the UserList",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "404": {
+            "description": "Failed. Cat not found."
+          }
+        }
+      }
+    },
+    "/updatePeople": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update user in system",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "description": "person detail",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "Failed. Bad post data."
+          }
+        }
+      }
+    },
+    "/deletePeople": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete a user in system",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "description": "person detail",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "Failed. Bad post data."
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "gender": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "name": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "first": {
+              "type": "string"
+            },
+            "last": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+<div id="form-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-5 col-md-3" class="form-signin">
+                <div class="form-login">
+                    <h3>Token Login Page</h3>
+                    <input type="text" [(ngModel)]="userName" id="userName" class="form-control input-sm chat-input" placeholder="Kullanıcı Adı Giriniz" />
+                    <br />
+                    <input type="password" [(ngModel)]="password"  id="password" class="form-control input-sm chat-input" placeholder="Şifrenizi Giriniz" />
+                    <br />
+                    <div  class="wrapper">
+                        <span class="group-btn">
+                            <input type="button" class="btn btn-primary btn-md" (click)="Redirect()" value="Giriş Yapınız"/>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

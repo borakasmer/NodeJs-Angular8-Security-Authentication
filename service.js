@@ -8,7 +8,9 @@ let config = require('./config');
 let token = require('./token');
 var crypto = require('crypto'); //Default Geliyor
 
-app.use(cors());
+app.use(cors({
+    exposedHeaders: ['Content-Length', 'Content-Type', 'Authorization', 'RefreshToken', 'Token'],
+}));
 
 //Swagger
 var swaggerUi = require('swagger-ui-express');
@@ -191,7 +193,7 @@ app.post('/updatePeople', token, async (req, res) => {
 })
 
 app.post('/login', async (req, res) => {
-    try {        
+    try {
         console.log("req.username : " + req.body.username);
         console.log("req.password : " + req.body.password);
         var password = Decrypt(req.body.password);
@@ -207,9 +209,16 @@ app.post('/login', async (req, res) => {
                     config.secret,
                     {
                         expiresIn: '1h' // expires in 1 hour
+                        /* expiresIn: 15 // expires in 15 minutes */
                     }
                 );
-                return res.status(200).json({ status: "succesfully login", token: token, success: true });
+                var refreshToken = jwt.sign({ username: req.body.username },
+                    config.secret,
+                    {
+                        expiresIn: '2h' // expires in 2 hour                            
+                    }
+                );
+                return res.status(200).json({ status: "succesfully login", token: token, refreshToken: refreshToken, success: true });
             }
             else {
                 return res.status(401).send("Username or Password Wrong!");
@@ -262,8 +271,8 @@ function Decrypt(password) {
 
     var output = "";
 
-    var i = 0;   
-    password = password.replace("/[^ A - Za - z0 - 9\+\/\=] / g", "");    
+    var i = 0;
+    password = password.replace("/[^ A - Za - z0 - 9\+\/\=] / g", "");
     do {
         var enc1 = keyStr.indexOf(password[i++]);
         var enc2 = keyStr.indexOf(password[i++]);
@@ -283,8 +292,8 @@ function Decrypt(password) {
         }
         chr1 = chr2 = chr3 = null;
         enc1 = enc2 = enc3 = enc4 = null;
-    } while (i < password.length);    
-    output = unescape(output);    
+    } while (i < password.length);
+    output = unescape(output);
     var pattern = new RegExp("[|]");
     output = output.replace(pattern, "+");
     return output;

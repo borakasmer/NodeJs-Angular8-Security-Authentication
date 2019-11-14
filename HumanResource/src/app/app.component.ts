@@ -26,7 +26,7 @@ export class AppComponent implements AfterViewInit {
   isPreviewActive: boolean = false;
   constructor(public service: PersonService, private router: Router) { }
 
-  ngAfterViewInit() {    
+  ngAfterViewInit() {
     this.getPeople();
     fromEvent(this.userSearchInput.nativeElement, 'keyup').pipe(
       // get value
@@ -52,16 +52,17 @@ export class AppComponent implements AfterViewInit {
     });
   }
   public getPeople(desc: boolean = false) {
-    return this.service.getPeopleList(desc).subscribe((data: any = []) => {      
-      if (data.success == false) {
-        this.router.navigateByUrl('');
-      }
-      else {
-        this.isGetPeople = true;
-        this.peopleList = data.slice(0, 5);
-        console.log(this.peopleList);
-      }
-    });
+    return this.service.getPeopleList(desc)      
+      .subscribe((data: any = []) => {        
+        if (data.success == false) {
+          this.router.navigateByUrl('');
+        }
+        else {
+          this.isGetPeople = true;
+          this.peopleList = data.slice(0, 5);
+          console.log(this.peopleList);
+        }
+      });
   }
 
   public clickInsert() {
@@ -118,7 +119,7 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
-  public Next() {    
+  public Next() {
     this.currentPagecount = this.currentPagecount + 1 >= 0 ? this.currentPagecount + 1 : this.currentPagecount
     return this.service.getPeopleListByPaging(this.currentPagecount).subscribe((data: any = []) => {
       if (data.success == false) {

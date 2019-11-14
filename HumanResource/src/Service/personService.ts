@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Person } from 'src/Model/person';
 import { Observable, throwError } from 'rxjs';
-import { retry, catchError } from 'rxjs/operators';
+import { retry, catchError, map } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class PersonService {
@@ -25,22 +25,51 @@ export class PersonService {
         }
     }
 
-    public getPeopleList(desc: boolean = false): Observable<Person> {
+    public checkTokenTime() {
+        debugger;
+        if (window.localStorage.getItem("createdDate") != null) {
+            var createdDate = new Date(window.localStorage.getItem("createdDate"));
+            var now = new Date();
+            var difference = now.getTime() - createdDate.getTime();
+            var resultInMinutes = Math.round(difference / 60000);
+            return resultInMinutes > 1;  //45 olacak
+        }
+        else {
+            return true;
+        }
+    }
+    public getPeopleList(desc: boolean = false): Observable<Person[]> {
         let url: string = desc ? this.baseUrlDesc : this.baseUrl;
-
+        var refreshToken = (window.localStorage.getItem("refreshToken") != null && this.checkTokenTime()) ? window.localStorage.getItem("refreshToken") : "";
         let httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + this.GetToken(),
-            })
+                'RefreshToken': refreshToken,
+            }),
+            observe: 'response' as 'body',
         }
-        return this.httpClient.get<Person>(url, httpOptions)
+        debugger;
+        return this.httpClient.get<any>(url, httpOptions)
             .pipe(
+                map(response => {
+                    var token = response.headers.get('token');
+                    var refreshToken = response.headers.get('refreshToken');
+                    debugger;
+                    if (token && refreshToken) {
+                        console.log("Token :" + token);
+                        console.log("RefreshToken :" + refreshToken);
+                        window.localStorage.setItem("token", token);
+                        window.localStorage.setItem("refreshToken", refreshToken);
+                        window.localStorage.setItem("createdDate", new Date().toString());
+                    }
+                    return response.body;
+                }),
                 retry(1),
-                catchError(this.errorHandel)
+                catchError(this.errorHandel),
             )
     }
-    public getPeopleListByPaging(pageNo: number): Observable<Person> {
+    /* public getPeopleListByPaging(pageNo: number): Observable<Person> {
         let httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json',
@@ -52,60 +81,154 @@ export class PersonService {
                 retry(1),
                 catchError(this.errorHandel)
             )
-    }
-
-
-    public updatePerson(data: Person): Observable<any> {
+    } */
+    public getPeopleListByPaging(pageNo: number): Observable<any> {
+        var refreshToken = (window.localStorage.getItem("refreshToken") != null && this.checkTokenTime()) ? window.localStorage.getItem("refreshToken") : "";
         let httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + this.GetToken(),
-            })
+                'RefreshToken': refreshToken,
+            }),
+            observe: 'response' as 'body',
         }
-        return this.httpClient.post<Person>(this.updateUrl, JSON.stringify(data), httpOptions)
+        return this.httpClient.get<any>(this.pagingUrl + "/" + pageNo + "/5", httpOptions)
             .pipe(
+                map(response => {
+                    var token = response.headers.get('token');
+                    var refreshToken = response.headers.get('refreshToken');
+                    debugger;
+                    if (token && refreshToken) {
+                        console.log("Token :" + token);
+                        console.log("RefreshToken :" + refreshToken);
+                        window.localStorage.setItem("token", token);
+                        window.localStorage.setItem("refreshToken", refreshToken);
+                        window.localStorage.setItem("createdDate", new Date().toString());
+                    }
+                    return response.body;
+                }),
+                retry(1),
+                catchError(this.errorHandel)
+            )
+    }
+
+
+    public updatePerson(data: Person): Observable<any> {
+        var refreshToken = (window.localStorage.getItem("refreshToken") != null && this.checkTokenTime()) ? window.localStorage.getItem("refreshToken") : "";
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + this.GetToken(),
+                'RefreshToken': refreshToken,
+            }),
+            observe: 'response' as 'body',
+        }
+        return this.httpClient.post<any>(this.updateUrl, JSON.stringify(data), httpOptions)
+            .pipe(
+                map(response => {
+                    var token = response.headers.get('token');
+                    var refreshToken = response.headers.get('refreshToken');
+                    debugger;
+                    if (token && refreshToken) {
+                        console.log("Token :" + token);
+                        console.log("RefreshToken :" + refreshToken);
+                        window.localStorage.setItem("token", token);
+                        window.localStorage.setItem("refreshToken", refreshToken);
+                        window.localStorage.setItem("createdDate", new Date().toString());
+                    }
+                    return response.body;
+                }),
                 retry(1),
                 catchError(this.errorHandel)
             )
     }
 
     public insertPeople(data: Person): Observable<any> {
+        var refreshToken = (window.localStorage.getItem("refreshToken") != null && this.checkTokenTime()) ? window.localStorage.getItem("refreshToken") : "";
         let httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + this.GetToken(),
-            })
+                'RefreshToken': refreshToken,
+            }),
+            observe: 'response' as 'body',
         }
-        return this.httpClient.post<Person>(this.inserteUrl, JSON.stringify(data), httpOptions)
+        return this.httpClient.post<any>(this.inserteUrl, JSON.stringify(data), httpOptions)
             .pipe(
+                map(response => {
+                    var token = response.headers.get('token');
+                    var refreshToken = response.headers.get('refreshToken');
+                    debugger;
+                    if (token && refreshToken) {
+                        console.log("Token :" + token);
+                        console.log("RefreshToken :" + refreshToken);
+                        window.localStorage.setItem("token", token);
+                        window.localStorage.setItem("refreshToken", refreshToken);
+                        window.localStorage.setItem("createdDate", new Date().toString());
+                    }
+                    return response.body;
+                }),
                 retry(1),
                 catchError(this.errorHandel)
             )
     }
 
     public searchPeopleByName(name: string): Observable<Person> {
+        debugger;
+        var refreshToken = (window.localStorage.getItem("refreshToken") != null && this.checkTokenTime()) ? window.localStorage.getItem("refreshToken") : "";
         let httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + this.GetToken(),
-            })
+                'RefreshToken': refreshToken,
+            }),
+            observe: 'response' as 'body',
         }
-        return this.httpClient.get<Person>(this.searchUrl + "/" + name, httpOptions)
+        return this.httpClient.get<any>(this.searchUrl + "/" + name, httpOptions)
             .pipe(
+                map(response => {
+                    var token = response.headers.get('token');
+                    var refreshToken = response.headers.get('refreshToken');
+                    debugger;
+                    if (token && refreshToken) {
+                        console.log("Token :" + token);
+                        console.log("RefreshToken :" + refreshToken);
+                        window.localStorage.setItem("token", token);
+                        window.localStorage.setItem("refreshToken", refreshToken);
+                        window.localStorage.setItem("createdDate", new Date().toString());
+                    }
+                    return response.body;
+                }),
                 retry(1),
                 catchError(this.errorHandel)
             )
     }
 
     public deletePeople(data: Person): Observable<any> {
+        var refreshToken = (window.localStorage.getItem("refreshToken") != null && this.checkTokenTime()) ? window.localStorage.getItem("refreshToken") : "";
         let httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + this.GetToken(),
-            })
+                'RefreshToken': refreshToken,
+            }),
+            observe: 'response' as 'body',
         }
-        return this.httpClient.post<Person>(this.deleteUrl, JSON.stringify(data), httpOptions)
+        return this.httpClient.post<any>(this.deleteUrl, JSON.stringify(data), httpOptions)
             .pipe(
+                map(response => {
+                    var token = response.headers.get('token');
+                    var refreshToken = response.headers.get('refreshToken');
+                    debugger;
+                    if (token && refreshToken) {
+                        console.log("Token :" + token);
+                        console.log("RefreshToken :" + refreshToken);
+                        window.localStorage.setItem("token", token);
+                        window.localStorage.setItem("refreshToken", refreshToken);
+                        window.localStorage.setItem("createdDate", new Date().toString());
+                    }
+                    return response.body;
+                }),
                 retry(1),
                 catchError(this.errorHandel)
             )

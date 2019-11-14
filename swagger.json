@@ -97,6 +97,11 @@
         "tags": [
           "Users"
         ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "summary": "Get all users descending in system",
         "responses": {
           "200": {
@@ -128,6 +133,11 @@
             }
           }
         ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -145,6 +155,11 @@
       "get": {
         "tags": [
           "Users"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
         ],
         "summary": "Get user list by paging",
         "parameters": [
@@ -182,6 +197,11 @@
           "Users"
         ],
         "summary": "Get user list by userName",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "name",
@@ -208,6 +228,11 @@
       "get": {
         "tags": [
           "Users"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
         ],
         "summary": "Get user list by lastName",
         "parameters": [
@@ -236,6 +261,11 @@
       "get": {
         "tags": [
           "Users"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
         ],
         "summary": "Get user list contains name descending order. Take Top count item",
         "parameters": [
@@ -272,6 +302,11 @@
         "tags": [
           "Users"
         ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "summary": "Get user list starts with name.",
         "parameters": [
           {
@@ -299,6 +334,11 @@
       "post": {
         "tags": [
           "Users"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
         ],
         "summary": "Update user in system",
         "produces": [
@@ -332,6 +372,11 @@
       "post": {
         "tags": [
           "Users"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
         ],
         "summary": "Delete a user in system",
         "produces": [

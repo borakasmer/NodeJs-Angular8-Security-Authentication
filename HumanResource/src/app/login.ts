@@ -20,7 +20,10 @@ export class LoginComponent implements AfterViewInit {
 
     Redirect() {
         this.service.login(this.userName, this.password).subscribe((data: any) => {
+            debugger;
             window.localStorage.setItem("token", data.token);
+            window.localStorage.setItem("refreshToken", data.refreshToken);
+            window.localStorage.setItem("createdDate", new Date().toString());
             this.router.navigateByUrl('person');
         });
     }
